@@ -1,4 +1,6 @@
-# Server_-monitoring_dashboard
+# Server Monitoring Dashboard
+
+![Frontend Dashboard](./app/static/img/frontend_dashboard.png)
 
 To see the monitor:
 - pip3 install -r requirements.txt (to install the required modules)
