@@ -1,10 +1,12 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import render_template, request
 import psutil  # Import the 'psutil' library for system monitoring
 import ezgmail  # Import the 'ezgmail' library for sending emails
-from config import EMAIL_ADDRESS
+import config 
 import time
-
 from app import app
+import secrets
+
+SECRET_KEY = secrets.token_hex(32)
 
 @app.route('/')
 def index():
@@ -42,24 +44,56 @@ def index():
                            bytes_received=bytes_received, packets_sent=packets_sent,
                            packets_received=packets_received, response_time=response_time)
 
-
 @app.route('/check_metrics', methods=['POST'])
 def check_metrics():
-    print('hello')
+    csrf_token = config.csrf_token
+    print('hello SRE')
     cpu_usage = psutil.cpu_percent(interval=None)
+    memory = psutil.virtual_memory()
+    disk_usage = psutil.disk_usage('/')
+    network_stats = psutil.net_io_counters()
+    start_time = time.time()  # Record the start time
+    end_time = time.time()  # Record the end time
+    response_time = end_time - start_time  # Calculate response time in seconds
 
-    # cpu_usage = 1
+    alerts = []  # Create a list to store alert messages
+
     if cpu_usage > 1:  # Set your desired CPU threshold here
-        subject = "High CPU Usage Alert"
-        body = f"CPU usage is {cpu_usage}% which is above the threshold."
+        cpu_alert = f"CPU usage is {cpu_usage}% which is above the threshold."
+        alerts.append(("High CPU Usage Alert", cpu_alert))
+    
+    if memory.percent > 1:  # Set your desired Memory threshold here
+        memory_alert = f"Memory usage is {memory.percent}% which is above the threshold."
+        alerts.append(("High Memory Usage Alert", memory_alert))
+    
+    if disk_usage.percent > 1:  # Set your desired Disk threshold here
+        disk_alert = f"Disk usage is {disk_usage.percent}% which is above the threshold."
+        alerts.append(("High Disk Usage Alert", disk_alert))
+    
+    if network_stats.bytes_sent > 100000:  # Set your desired Network threshold here
+        network_alert = f"Network sent bytes exceed the threshold."
+        alerts.append(("High Network Usage Alert", network_alert))
+    
+    if response_time > 0:  # Set your desired Response Time threshold here
+        response_alert = f"Response time is {response_time} seconds which is above the threshold."
+        alerts.append(("Slow Response Alert", response_alert))
+
+    # Send alert emails for each condition
+    for subject, body in alerts:
+        try:
+            ezgmail.send(config.EMAIL_ADDRESS, subject, body)
+            print("Email sent successfully.")
+        except Exception as e:
+            print("Error sending email:", str(e))
+    
         
-    try:
-        ezgmail.send(EMAIL_ADDRESS, subject, body)
-        print("Email sent successfully.")
-    except Exception as e:
-        print("Error sending email:", str(e))
+    
             
-    return "Metrics checked and email sent if necessary."
+    return render_template('check_metrics.html', csrf_token=csrf_token)
+
+    
+    
+
 
 if __name__ == '__main__':
     app.run()

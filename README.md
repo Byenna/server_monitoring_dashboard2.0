@@ -4,7 +4,8 @@ To see the monitor:
 - pip3 install -r requirements.txt (to install the required modules)
 - python3 server_monitor.py (to run the script)
 
-Here is a step-by-step guide to help you build a server monitoring dashboard using Python:
+Want to create your own? 
+Here is a (basic) step-by-step guide to help you build a server monitoring dashboard using Python:
 Step 1: Install the required packages
 - Begin by installing the necessary Python packages. You will need packages such as psutil, matplotlib, and Flask.
 - Use pip to install the packages by running the following commands:
