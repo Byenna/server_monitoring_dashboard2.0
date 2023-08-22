@@ -6,6 +6,7 @@ import time
 from app import app
 import secrets
 
+
 SECRET_KEY = secrets.token_hex(32)
 
 @app.route('/')
@@ -47,6 +48,7 @@ def index():
 @app.route('/check_metrics', methods=['POST'])
 def check_metrics():
     csrf_token = config.csrf_token
+    email_address = config.EMAIL_ADDRESS 
     print('hello SRE')
     cpu_usage = psutil.cpu_percent(interval=None)
     memory = psutil.virtual_memory()
@@ -58,23 +60,23 @@ def check_metrics():
 
     alerts = []  # Create a list to store alert messages
 
-    if cpu_usage > 1:  # Set your desired CPU threshold here
+    if cpu_usage > 100:  # Set your desired CPU threshold here
         cpu_alert = f"CPU usage is {cpu_usage}% which is above the threshold."
         alerts.append(("High CPU Usage Alert", cpu_alert))
     
-    if memory.percent > 1:  # Set your desired Memory threshold here
+    if memory.percent > 100:  # Set your desired Memory threshold here
         memory_alert = f"Memory usage is {memory.percent}% which is above the threshold."
         alerts.append(("High Memory Usage Alert", memory_alert))
     
-    if disk_usage.percent > 1:  # Set your desired Disk threshold here
+    if disk_usage.percent > 100:  # Set your desired Disk threshold here
         disk_alert = f"Disk usage is {disk_usage.percent}% which is above the threshold."
         alerts.append(("High Disk Usage Alert", disk_alert))
     
-    if network_stats.bytes_sent > 100000:  # Set your desired Network threshold here
+    if network_stats.bytes_sent > 10000000:  # Set your desired Network threshold here
         network_alert = f"Network sent bytes exceed the threshold."
         alerts.append(("High Network Usage Alert", network_alert))
     
-    if response_time > 0:  # Set your desired Response Time threshold here
+    if response_time > 100:  # Set your desired Response Time threshold here
         response_alert = f"Response time is {response_time} seconds which is above the threshold."
         alerts.append(("Slow Response Alert", response_alert))
 
@@ -89,7 +91,7 @@ def check_metrics():
         
     
             
-    return render_template('check_metrics.html', csrf_token=csrf_token)
+    return render_template('check_metrics.html', csrf_token=csrf_token, config=config)
 
     
     
