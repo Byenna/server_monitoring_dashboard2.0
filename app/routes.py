@@ -5,9 +5,10 @@ import config
 import time
 from app import app
 import secrets
-
+import os
 
 SECRET_KEY = secrets.token_hex(32)
+home_directory = os.path.expanduser("http://127.0.0.1:5000")
 
 @app.route('/')
 def index():
@@ -48,7 +49,7 @@ def index():
 @app.route('/check_metrics', methods=['POST'])
 def check_metrics():
     csrf_token = config.csrf_token
-    email_address = config.EMAIL_ADDRESS 
+    script_url = f"{home_directory}/create_postmortem"
     print('hello SRE')
     cpu_usage = psutil.cpu_percent(interval=None)
     memory = psutil.virtual_memory()
@@ -71,10 +72,11 @@ def check_metrics():
     if disk_usage.percent > 100:  # Set your desired Disk threshold here
         disk_alert = f"Disk usage is {disk_usage.percent}% which is above the threshold."
         alerts.append(("High Disk Usage Alert", disk_alert))
-    
-    if network_stats.bytes_sent > 10000000:  # Set your desired Network threshold here
-        network_alert = f"Network sent bytes exceed the threshold."
+
+    if network_stats.bytes_sent > 1000000:  # Set your desired Network threshold here
+        network_alert = f"Network sent bytes exceed the threshold. Click <a href='{script_url}'>here</a> to activate the script."
         alerts.append(("High Network Usage Alert", network_alert))
+
     
     if response_time > 100:  # Set your desired Response Time threshold here
         response_alert = f"Response time is {response_time} seconds which is above the threshold."
@@ -91,9 +93,16 @@ def check_metrics():
         
     
             
-    return render_template('check_metrics.html', csrf_token=csrf_token, config=config)
+    return render_template('check_metrics.html', csrf_token=csrf_token, config=config, script_url=script_url )
 
+@app.route('/create_postmortem')
+def create_postmortem():
+    # Add your script activation logic here
+    # For example, you can call the necessary functions or perform actions
     
+    # Once the script is activated, you can redirect the user to a different page or render a template
+    return render_template('postmortem_created.html')
+ 
     
 
 
