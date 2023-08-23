@@ -74,7 +74,7 @@ def check_metrics():
         alerts.append(("High Disk Usage Alert", disk_alert))
 
     if network_stats.bytes_sent > 1000000:  # Set your desired Network threshold here
-        network_alert = f"Network sent bytes exceed the threshold. Click <a href='{script_url}'>here</a> to activate the script."
+        network_alert = f"Network sent bytes exceed the threshold. Click this link {script_url} to activate the script."
         alerts.append(("High Network Usage Alert", network_alert))
 
     
