@@ -119,27 +119,12 @@ def submit_postmortem():
     actions = request.form.get('actions')
     prevention = request.form.get('prevention')
     insights = request.form.get('insights')
-    
-    # report = generate_report(title, date, summary, timeline, impact, root_causes, actions, prevention, insights)
-    
-    # Save report to Firestore
-    reports_ref = db.reference('postmortem_reports')  # Reference to the collection
-    new_report_data = {
-        'title': title,
-        'date': date,
-        'summary': summary,
-        'timeline': timeline,
-        'impact': impact,
-        'root_causes': root_causes,
-        'actions': actions,
-        'prevention': prevention,
-        'insights': insights
-    }
-    new_report_ref = reports_ref.push(new_report_data)  # Add a new document to the collection
+    report = generate_report(title, date, summary, timeline, impact, root_causes, actions, prevention, insights)
 
+    save_to_text_file(report)
     return "Report submitted successfully!"
 
-# def generate_report(title, date, summary, timeline, impact, root_causes, actions, prevention, insights):
+def generate_report(title, date, summary, timeline, impact, root_causes, actions, prevention, insights):
     report = f"""
     # Postmortem Report
 
@@ -172,6 +157,19 @@ def submit_postmortem():
     """
     return report
 
+def save_to_text_file(report):
+    output_dir = os.environ.get('OUTPUT_DIR')
+    today = datetime.date.today()
+    formatted_date = today.strftime("%Y-%m-%d")
+    filename = f"postmortem_report_{formatted_date}.txt"
+
+     # Create the directory if it doesn't exist
+    os.makedirs(output_dir, exist_ok=True)
+
+    filepath = os.path.join(output_dir, filename)
+
+    with open(filepath, "w") as f:
+       f.write(report)
 
 if __name__ == '__main__':
     app.run()
