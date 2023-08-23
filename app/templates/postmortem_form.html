@@ -1,0 +1,39 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<body>
+    <h1>Postmortem Report Form</h1>
+    <form action="/submit_postmortem" method="post">
+        <label for="title">Title:</label>
+        <input type="text" name="title" required><br>
+        
+        <label for="date">Date:</label>
+        <input type="date" name="date" required><br>
+        
+        <label for="summary">Summary:</label>
+        <textarea name="summary" required></textarea><br>
+        
+        <label for="timeline">Timeline:</label>
+        <textarea name="timeline" required></textarea><br>
+        
+        <label for="impact">Impact:</label>
+        <textarea name="impact" required></textarea><br>
+        
+        <label for="root_causes">Root Causes:</label>
+        <textarea name="root_causes" required></textarea><br>
+        
+        <label for="actions">Corrective Actions:</label>
+        <textarea name="actions" required></textarea><br>
+        
+        <label for="prevention">Preventative Actions:</label>
+        <textarea name="prevention" required></textarea><br>
+        
+        <label for="insights">Insights:</label>
+        <textarea name="insights" required></textarea><br>
+        
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
+
+{% endblock %}

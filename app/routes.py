@@ -6,6 +6,15 @@ import time
 from app import app
 import secrets
 import os
+import datetime
+import firebase_admin
+from firebase_admin import credentials, db
+
+# Initialize Firebase Admin SDK
+cred = credentials.Certificate('test-12-12-12-firebase-adminsdk-d0rcs-be2e6eb263.json')
+firebase_admin.initialize_app(cred, {
+    'databaseURL': 'https://test-12-12-12-default-rtdb.europe-west1.firebasedatabase.app/'
+})
 
 SECRET_KEY = secrets.token_hex(32)
 home_directory = os.path.expanduser("http://127.0.0.1:5000")
@@ -97,13 +106,71 @@ def check_metrics():
 
 @app.route('/create_postmortem')
 def create_postmortem():
-    # Add your script activation logic here
-    # For example, you can call the necessary functions or perform actions
+    return render_template('postmortem_form.html')
+
+@app.route('/submit_postmortem', methods=['POST'])
+def submit_postmortem():
+    title = request.form.get('title')
+    date = request.form.get('date')
+    summary = request.form.get('summary')
+    timeline = request.form.get('timeline')
+    impact = request.form.get('impact')
+    root_causes = request.form.get('root_causes')
+    actions = request.form.get('actions')
+    prevention = request.form.get('prevention')
+    insights = request.form.get('insights')
     
-    # Once the script is activated, you can redirect the user to a different page or render a template
-    return render_template('postmortem_created.html')
- 
+    # report = generate_report(title, date, summary, timeline, impact, root_causes, actions, prevention, insights)
     
+    # Save report to Firestore
+    reports_ref = db.reference('postmortem_reports')  # Reference to the collection
+    new_report_data = {
+        'title': title,
+        'date': date,
+        'summary': summary,
+        'timeline': timeline,
+        'impact': impact,
+        'root_causes': root_causes,
+        'actions': actions,
+        'prevention': prevention,
+        'insights': insights
+    }
+    new_report_ref = reports_ref.push(new_report_data)  # Add a new document to the collection
+
+    return "Report submitted successfully!"
+
+# def generate_report(title, date, summary, timeline, impact, root_causes, actions, prevention, insights):
+    report = f"""
+    # Postmortem Report
+
+    ## Title
+    {title}
+
+    ## Date
+    {date}
+
+    ## Summary
+    {summary}
+
+    ## Timeline
+    {timeline}
+
+    ## Impact
+    {impact}
+
+    ## Root Causes
+    {root_causes}
+
+    ## Corrective Actions
+    {actions}
+
+    ## Preventative Actions
+    {prevention}
+
+    ## Insights
+    {insights}
+    """
+    return report
 
 
 if __name__ == '__main__':
