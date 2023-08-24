@@ -1,39 +1,60 @@
 {% extends 'index.html' %}
 
 {% block content %}
-<body>
+<section class="page-section bg-primary">
+    <div class="container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-lg-8">
     <h1>Postmortem Report Form</h1>
-    <form action="/submit_postmortem" method="post">
-        <label for="title">Title:</label>
-        <input type="text" name="title" required><br>
+    <form id="postmortem_form" action="/submit_postmortem" method="post">
+        <div class="form-group">
+            <label for="title">Title:</label>
+            <input type="text" name="title" class="form-control" required="">
+        </div>
         
-        <label for="date">Date:</label>
-        <input type="date" name="date" required><br>
+        <div class="form-group">
+            <label for="date">Date:</label>
+            <input type="date" name="date" class="form-control" required="">
+        </div>
         
-        <label for="summary">Summary:</label>
-        <textarea name="summary" required></textarea><br>
+        <div class="form-group">
+            <label for="summary">Summary:</label>
+            <textarea name="summary" class="form-control" required=""></textarea>
+        </div>
         
-        <label for="timeline">Timeline:</label>
-        <textarea name="timeline" required></textarea><br>
+        <div class="form-group">
+            <label for="timeline">Timeline:</label>
+            <textarea name="timeline" class="form-control" required=""></textarea>
+        </div>
         
-        <label for="impact">Impact:</label>
-        <textarea name="impact" required></textarea><br>
+        <div class="form-group">
+            <label for="impact">Impact:</label>
+            <textarea name="impact" class="form-control" required=""></textarea>
+        </div>
         
-        <label for="root_causes">Root Causes:</label>
-        <textarea name="root_causes" required></textarea><br>
+        <div class="form-group">
+            <label for="root_causes">Root Causes:</label>
+            <textarea name="root_causes" class="form-control" required=""></textarea>
+        </div>
         
-        <label for="actions">Corrective Actions:</label>
-        <textarea name="actions" required></textarea><br>
+        <div class="form-group">
+            <label for="actions">Corrective Actions:</label>
+            <textarea name="actions" class="form-control" required=""></textarea>
+        </div>
         
-        <label for="prevention">Preventative Actions:</label>
-        <textarea name="prevention" required></textarea><br>
+        <div class="form-group">
+            <label for="prevention">Preventative Actions:</label>
+            <textarea name="prevention" class="form-control" required=""></textarea>
+        </div>
         
-        <label for="insights">Insights:</label>
-        <textarea name="insights" required></textarea><br>
+        <div class="form-group">
+            <label for="insights">Insights:</label>
+            <textarea name="insights" class="form-control" required=""></textarea>
+        </div>
         
-        <button type="submit">Submit</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-</body>
+</section>
 </html>
 
 {% endblock %}
