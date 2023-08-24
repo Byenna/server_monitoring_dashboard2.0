@@ -1,4 +1,4 @@
-from flask import render_template, request
+from flask import Flask, request, render_template, make_response
 import psutil  # Import the 'psutil' library for system monitoring
 import ezgmail  # Import the 'ezgmail' library for sending emails
 import config 
@@ -6,9 +6,12 @@ import time
 from app import app
 import secrets
 import os
+import json
+import base64
 import datetime
 import firebase_admin
 from firebase_admin import credentials, db
+
 
 # Initialize Firebase Admin SDK
 cred = credentials.Certificate('test-12-12-12-firebase-adminsdk-d0rcs-be2e6eb263.json')
@@ -119,10 +122,8 @@ def submit_postmortem():
     actions = request.form.get('actions')
     prevention = request.form.get('prevention')
     insights = request.form.get('insights')
-    
-    # Save report to Firestore
-    reports_ref = db.reference('postmortem_reports')  # Reference to the collection
-    new_report_data = {
+
+    report_data = {
         'title': title,
         'date': date,
         'summary': summary,
@@ -133,13 +134,30 @@ def submit_postmortem():
         'prevention': prevention,
         'insights': insights
     }
-    new_report_ref = reports_ref.push(new_report_data)  # Add a new document to the collection
 
-    return render_template('download_postmortem.html', report=new_report_data)
+    encoded_report = base64.b64encode(json.dumps(report_data).encode('utf-8')).decode('utf-8')
+    
+    return render_template('preview_postmortem.html', report=report_data, encoded_report=encoded_report)
+
+
 
 @app.route('/download_postmortem')
 def download_postmortem():
-    return "Downloaded successfully"
+    encoded_report = request.args.get('encoded_report')
+    report_data = json.loads(base64.b64decode(encoded_report).decode('utf-8'))
+
+    report_text = f"Title: {report_data['title']}\nDate: {report_data['date']}\nSummary: {report_data['summary']}\nTimeline: {report_data['timeline']}\nImpact: {report_data['impact']}\nRoot Causes: {report_data['root_causes']}\nActions: {report_data['actions']}\nPrevention: {report_data['prevention']}\nInsights: {report_data['insights']}"
+
+    response = make_response(report_text)
+    response.headers["Content-Disposition"] = "attachment; filename=postmortem_report.txt"
+    response.headers["Content-Type"] = "text/plain"
+
+    return response
+
+
+
+
+
 
 if __name__ == '__main__':
     app.run()

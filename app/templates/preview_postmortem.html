@@ -1,0 +1,17 @@
+{% extends 'index.html' %}
+
+{% block content %}
+    <h1>Postmortem Report Preview</h1>
+
+    <h2>{{ report.title }}</h2>
+    <p>Date: {{ report.date }}</p>
+    <p>Summary: {{ report.summary }}</p>
+    <p>Timeline: {{ report.timeline }}</p>
+    <p>Impact: {{ report.impact }}</p>
+    <p>Root Causes: {{ report.root_causes }}</p>
+    <p>Actions: {{ report.actions }}</p>
+    <p>Prevention: {{ report.prevention }}</p>
+    <p>Insights: {{ report.insights }}</p>
+
+    <a href="{{ url_for('download_postmortem', encoded_report=encoded_report) }}" download="postmortem_report.txt">Download Report</a>
+{% endblock %}
