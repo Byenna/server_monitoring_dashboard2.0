@@ -120,8 +120,6 @@ def submit_postmortem():
     prevention = request.form.get('prevention')
     insights = request.form.get('insights')
     
-    # report = generate_report(title, date, summary, timeline, impact, root_causes, actions, prevention, insights)
-    
     # Save report to Firestore
     reports_ref = db.reference('postmortem_reports')  # Reference to the collection
     new_report_data = {
@@ -137,41 +135,11 @@ def submit_postmortem():
     }
     new_report_ref = reports_ref.push(new_report_data)  # Add a new document to the collection
 
-    return "Report submitted successfully!"
+    return render_template('download_postmortem.html', report=new_report_data)
 
-# def generate_report(title, date, summary, timeline, impact, root_causes, actions, prevention, insights):
-    report = f"""
-    # Postmortem Report
-
-    ## Title
-    {title}
-
-    ## Date
-    {date}
-
-    ## Summary
-    {summary}
-
-    ## Timeline
-    {timeline}
-
-    ## Impact
-    {impact}
-
-    ## Root Causes
-    {root_causes}
-
-    ## Corrective Actions
-    {actions}
-
-    ## Preventative Actions
-    {prevention}
-
-    ## Insights
-    {insights}
-    """
-    return report
-
+@app.route('/download_postmortem')
+def download_postmortem():
+    return "Downloaded successfully"
 
 if __name__ == '__main__':
     app.run()

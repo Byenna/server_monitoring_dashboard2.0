@@ -1,0 +1,14 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<h1>Postmortem Report</h1>
+
+<h2>{{ report.title }}</h2>
+<p>Date: {{ report.date }}</p>
+<p>Summary: {{ report.summary }}</p>
+<p>Timeline: {{ report.timeline }}</p>
+<p>Impact: {{ report.impact }}</p>
+<!-- Display other fields as needed -->
+
+<!-- Add download link or any other desired content -->
+{% endblock %}
